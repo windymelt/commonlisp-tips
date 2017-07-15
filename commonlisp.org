@@ -59,7 +59,7 @@ asdファイルに使うファイルを記述する（面倒）
 #+NAME: commonlisp-read-lines
 #+BEGIN_SRC lisp
 (loop for line = (read-line nil nil :eof)
-      until (eq line :nil)
+      until (eq line :eof)
       do (print t "%s%~" line))
 #+END_SRC
 
