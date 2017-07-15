@@ -1,6 +1,10 @@
 #+title: Common Lisp Tips
 #+author: Windymelt
 #+OPTIONS: html5-fancy toc:nil
+#+LANGUAGE: ja
+#+KEYWORDS: commonlisp
+#+LINK_HOME:/
+#+DESCRIPTION: Common lispで書くために調べた事柄の実用的メモ．CLでのやり方を集めることを目指す．
 #+HTML_HEAD: <link rel="stylesheet" href="marx.min.css">
 
 #+HTML:<main>
