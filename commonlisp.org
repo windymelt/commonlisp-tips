@@ -20,6 +20,27 @@
 :END:
 TBD
 
+* 略称を定義する
+:PROPERTIES:
+:CUSTOM_ID: defining-abbrev
+:END:
+
+#+BEGIN_SRC lisp :results output :exports both
+(defmacro abbrev (short long)
+  `(defmacro ,short (&rest args)
+     `(,',long ,@args)))
+
+(abbrev dbind destructuring-bind) ; too hard to remember
+
+(dbind (x y) '(a b)
+  (format t "~s, ~s~%" x y))
+#+END_SRC
+
+#+RESULTS:
+: A, B
+
+cf. http://www.bookshelf.jp/texi/onlisp/onlisp_17.html
+
 * パッケージ定義
 :PROPERTIES:
 :CUSTOM_ID: package

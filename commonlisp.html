@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
 <head>
 <title>Common Lisp Tips</title>
-<!-- 2017-07-16 Sun 03:08 -->
+<!-- 2017-07-16 Sun 03:18 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Windymelt" />
@@ -154,25 +154,26 @@ for the JavaScript code in this tag.
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#install">1. インストール</a></li>
-<li><a href="#package">2. パッケージ定義</a></li>
-<li><a href="#split-string">3. Common Lispにsplitはないの？</a></li>
-<li><a href="#read-line">4. 標準入力から行を読み込む</a></li>
-<li><a href="#octet-stream-to-string">5. Octet streamを文字列に変換したい</a></li>
-<li><a href="#http-client-drakma">6. http clientを使いたい</a></li>
-<li><a href="#write-and-read-json">7. jsonを書きたい</a></li>
-<li><a href="#destrucuring-bind">8. 分割代入</a>
+<li><a href="#defining-abbrev">2. 略称を定義する</a></li>
+<li><a href="#package">3. パッケージ定義</a></li>
+<li><a href="#split-string">4. Common Lispにsplitはないの？</a></li>
+<li><a href="#read-line">5. 標準入力から行を読み込む</a></li>
+<li><a href="#octet-stream-to-string">6. Octet streamを文字列に変換したい</a></li>
+<li><a href="#http-client-drakma">7. http clientを使いたい</a></li>
+<li><a href="#write-and-read-json">8. jsonを書きたい</a></li>
+<li><a href="#destrucuring-bind">9. 分割代入</a>
 <ul>
-<li><a href="#destructuring-bind-macro">8.1. <code>destructuring-bind</code></a></li>
-<li><a href="#optima-match">8.2. <code>match</code> / <code>let-match</code></a></li>
+<li><a href="#destructuring-bind-macro">9.1. <code>destructuring-bind</code></a></li>
+<li><a href="#optima-match">9.2. <code>match</code> / <code>let-match</code></a></li>
 </ul>
 </li>
-<li><a href="#loop">9. 繰り返し</a></li>
-<li><a href="#hash-p">10. #pとは</a></li>
-<li><a href="#hash-s">11. #sとは</a></li>
-<li><a href="#read-float-as-double">12. doubleとして数値を読む</a></li>
-<li><a href="#read-commandline-options">13. コマンドラインオプションを読み取る</a>
+<li><a href="#loop">10. 繰り返し</a></li>
+<li><a href="#hash-p">11. #pとは</a></li>
+<li><a href="#hash-s">12. #sとは</a></li>
+<li><a href="#read-float-as-double">13. doubleとして数値を読む</a></li>
+<li><a href="#read-commandline-options">14. コマンドラインオプションを読み取る</a>
 <ul>
-<li><a href="#unix-opts">13.1. <code>unix-opts</code></a></li>
+<li><a href="#unix-opts">14.1. <code>unix-opts</code></a></li>
 </ul>
 </li>
 </ul>
@@ -188,8 +189,35 @@ TBD
 </div>
 </div>
 
+<div id="outline-container-defining-abbrev" class="outline-2">
+<h2 id="defining-abbrev"><a id="sec-2" name="sec-2"></a><span class="section-number-2">2</span> 略称を定義する</h2>
+<div class="outline-text-2" id="text-defining-abbrev">
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(<span style="color: #728a05;">defmacro</span> <span style="color: #2075c7;">abbrev</span> (short long)
+  `(<span style="color: #728a05;">defmacro</span> ,short (<span style="color: #a57705;">&amp;rest</span> args)
+     `(,',long ,@args)))
+
+(abbrev dbind destructuring-bind) <span style="color: #465a61; font-style: italic;">; too hard to remember</span>
+
+(dbind (x y) '(a b)
+  (format t <span style="color: #259185;">"~s, ~s~%"</span> x y))
+</pre>
+</div>
+
+<pre class="example">
+A, B
+</pre>
+
+<p>
+cf. <a href="http://www.bookshelf.jp/texi/onlisp/onlisp_17.html">http://www.bookshelf.jp/texi/onlisp/onlisp_17.html</a>
+</p>
+</div>
+</div>
+
 <div id="outline-container-package" class="outline-2">
-<h2 id="package"><a id="sec-2" name="sec-2"></a><span class="section-number-2">2</span> パッケージ定義</h2>
+<h2 id="package"><a id="sec-3" name="sec-3"></a><span class="section-number-2">3</span> パッケージ定義</h2>
 <div class="outline-text-2" id="text-package">
 
 <p>
@@ -200,7 +228,7 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 
 <div id="outline-container-split-string" class="outline-2">
-<h2 id="split-string"><a id="sec-3" name="sec-3"></a><span class="section-number-2">3</span> Common Lispにsplitはないの？</h2>
+<h2 id="split-string"><a id="sec-4" name="sec-4"></a><span class="section-number-2">4</span> Common Lispにsplitはないの？</h2>
 <div class="outline-text-2" id="text-split-string">
 
 <p>
@@ -258,7 +286,7 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 
 <div id="outline-container-read-line" class="outline-2">
-<h2 id="read-line"><a id="sec-4" name="sec-4"></a><span class="section-number-2">4</span> 標準入力から行を読み込む</h2>
+<h2 id="read-line"><a id="sec-5" name="sec-5"></a><span class="section-number-2">5</span> 標準入力から行を読み込む</h2>
 <div class="outline-text-2" id="text-read-line">
 
 <p>
@@ -276,7 +304,7 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 
 <div id="outline-container-octet-stream-to-string" class="outline-2">
-<h2 id="octet-stream-to-string"><a id="sec-5" name="sec-5"></a><span class="section-number-2">5</span> Octet streamを文字列に変換したい</h2>
+<h2 id="octet-stream-to-string"><a id="sec-6" name="sec-6"></a><span class="section-number-2">6</span> Octet streamを文字列に変換したい</h2>
 <div class="outline-text-2" id="text-octet-stream-to-string">
 
 <p>
@@ -286,7 +314,7 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 
 <div id="outline-container-http-client-drakma" class="outline-2">
-<h2 id="http-client-drakma"><a id="sec-6" name="sec-6"></a><span class="section-number-2">6</span> http clientを使いたい</h2>
+<h2 id="http-client-drakma"><a id="sec-7" name="sec-7"></a><span class="section-number-2">7</span> http clientを使いたい</h2>
 <div class="outline-text-2" id="text-http-client-drakma">
 
 <p>
@@ -296,7 +324,7 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 
 <div id="outline-container-write-and-read-json" class="outline-2">
-<h2 id="write-and-read-json"><a id="sec-7" name="sec-7"></a><span class="section-number-2">7</span> jsonを書きたい</h2>
+<h2 id="write-and-read-json"><a id="sec-8" name="sec-8"></a><span class="section-number-2">8</span> jsonを書きたい</h2>
 <div class="outline-text-2" id="text-write-and-read-json">
 
 <p>
@@ -324,7 +352,7 @@ jsonをパースするには <code>jsown:parse</code> を使う．
 </div>
 
 <div id="outline-container-destrucuring-bind" class="outline-2">
-<h2 id="destrucuring-bind"><a id="sec-8" name="sec-8"></a><span class="section-number-2">8</span> 分割代入</h2>
+<h2 id="destrucuring-bind"><a id="sec-9" name="sec-9"></a><span class="section-number-2">9</span> 分割代入</h2>
 <div class="outline-text-2" id="text-destrucuring-bind">
 
 <p>
@@ -333,7 +361,7 @@ jsonをパースするには <code>jsown:parse</code> を使う．
 </div>
 
 <div id="outline-container-destructuring-bind-macro" class="outline-3">
-<h3 id="destructuring-bind-macro"><a id="sec-8-1" name="sec-8-1"></a><span class="section-number-3">8.1</span> <code>destructuring-bind</code></h3>
+<h3 id="destructuring-bind-macro"><a id="sec-9-1" name="sec-9-1"></a><span class="section-number-3">9.1</span> <code>destructuring-bind</code></h3>
 <div class="outline-text-3" id="text-destructuring-bind-macro">
 
 <p>
@@ -351,7 +379,7 @@ jsonをパースするには <code>jsown:parse</code> を使う．
 </div>
 
 <div id="outline-container-optima-match" class="outline-3">
-<h3 id="optima-match"><a id="sec-8-2" name="sec-8-2"></a><span class="section-number-3">8.2</span> <code>match</code> / <code>let-match</code></h3>
+<h3 id="optima-match"><a id="sec-9-2" name="sec-9-2"></a><span class="section-number-3">9.2</span> <code>match</code> / <code>let-match</code></h3>
 <div class="outline-text-3" id="text-optima-match">
 
 <p>
@@ -392,7 +420,7 @@ first is ALPHA, second is BETA, third is GAMMA.
 </div>
 
 <div id="outline-container-loop" class="outline-2">
-<h2 id="loop"><a id="sec-9" name="sec-9"></a><span class="section-number-2">9</span> 繰り返し</h2>
+<h2 id="loop"><a id="sec-10" name="sec-10"></a><span class="section-number-2">10</span> 繰り返し</h2>
 <div class="outline-text-2" id="text-loop">
 
 <p>
@@ -420,7 +448,7 @@ cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.ne
 </div>
 
 <div id="outline-container-hash-p" class="outline-2">
-<h2 id="hash-p"><a id="sec-10" name="sec-10"></a><span class="section-number-2">10</span> #pとは</h2>
+<h2 id="hash-p"><a id="sec-11" name="sec-11"></a><span class="section-number-2">11</span> #pとは</h2>
 <div class="outline-text-2" id="text-hash-p">
 
 <p>
@@ -430,7 +458,7 @@ cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.ne
 </div>
 
 <div id="outline-container-hash-s" class="outline-2">
-<h2 id="hash-s"><a id="sec-11" name="sec-11"></a><span class="section-number-2">11</span> #sとは</h2>
+<h2 id="hash-s"><a id="sec-12" name="sec-12"></a><span class="section-number-2">12</span> #sとは</h2>
 <div class="outline-text-2" id="text-hash-s">
 
 <p>
@@ -440,7 +468,7 @@ cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.ne
 </div>
 
 <div id="outline-container-read-float-as-double" class="outline-2">
-<h2 id="read-float-as-double"><a id="sec-12" name="sec-12"></a><span class="section-number-2">12</span> doubleとして数値を読む</h2>
+<h2 id="read-float-as-double"><a id="sec-13" name="sec-13"></a><span class="section-number-2">13</span> doubleとして数値を読む</h2>
 <div class="outline-text-2" id="text-read-float-as-double">
 
 <p>
@@ -463,7 +491,7 @@ DOUBLE-FLOAT
 </div>
 
 <div id="outline-container-read-commandline-options" class="outline-2">
-<h2 id="read-commandline-options"><a id="sec-13" name="sec-13"></a><span class="section-number-2">13</span> コマンドラインオプションを読み取る</h2>
+<h2 id="read-commandline-options"><a id="sec-14" name="sec-14"></a><span class="section-number-2">14</span> コマンドラインオプションを読み取る</h2>
 <div class="outline-text-2" id="text-read-commandline-options">
 
 <p>
@@ -472,7 +500,7 @@ DOUBLE-FLOAT
 </div>
 
 <div id="outline-container-unix-opts" class="outline-3">
-<h3 id="unix-opts"><a id="sec-13-1" name="sec-13-1"></a><span class="section-number-3">13.1</span> <code>unix-opts</code></h3>
+<h3 id="unix-opts"><a id="sec-14-1" name="sec-14-1"></a><span class="section-number-3">14.1</span> <code>unix-opts</code></h3>
 <div class="outline-text-3" id="text-unix-opts">
 
 <p>
@@ -505,7 +533,7 @@ TBD
 </div>
 <div id="postamble" class="status">
 <p class="author">&#33879;&#32773;: Windymelt</p>
-<p class="date">Created: 2017-07-16 Sun 03:08</p>
+<p class="date">Created: 2017-07-16 Sun 03:18</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
