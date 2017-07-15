@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Common Lisp Tips</title>
+<!-- 2017-07-16 Sun 01:59 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Windymelt" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" href="marx.min.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Common Lisp Tips</h1>
+<main>
+
+<p>
+メモを残していきます．
+不定期に更新します．
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. インストール</a></li>
+<li><a href="#sec-2">2. パッケージ定義</a></li>
+<li><a href="#sec-3">3. Common Lispにsplitはないの？</a></li>
+<li><a href="#sec-4">4. 標準入力から行を読み込む</a></li>
+<li><a href="#sec-5">5. Octet streamを文字列に変換したい</a></li>
+<li><a href="#sec-6">6. http clientを使いたい</a></li>
+<li><a href="#sec-7">7. jsonを書きたい</a></li>
+<li><a href="#sec-8">8. 分割代入</a>
+<ul>
+<li><a href="#sec-8-1">8.1. <code>destructive-bind</code></a></li>
+<li><a href="#sec-8-2">8.2. <code>match</code> / <code>let-match</code></a></li>
+</ul>
+</li>
+<li><a href="#sec-9">9. 繰り返し</a></li>
+<li><a href="#sec-10">10. #pとは</a></li>
+<li><a href="#sec-11">11. #sとは</a></li>
+<li><a href="#sec-12">12. doubleとして数値を読む</a></li>
+<li><a href="#sec-13">13. コマンドラインオプションを読み取る</a>
+<ul>
+<li><a href="#sec-13-1">13.1. <code>unix-opts</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> インストール</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+TBD
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> パッケージ定義</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+asdファイルに使うファイルを記述する（面倒）
+<code>defpackage</code> ではパッケージ名はキーワードにする
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Common Lispにsplitはないの？</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+文字列を指定の文字で分割するには， <code>split-sequence:split-sequence</code> を使う．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(quicklisp:quickload <span style="color: #728a05;">:split-sequence</span>)
+(split-sequence:split-sequence #\Space <span style="color: #259185;">"this is sample CL program"</span>)
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="left">this</td>
+<td class="left">is</td>
+<td class="left">sample</td>
+<td class="left">CL</td>
+<td class="left">program</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+リストも分割できる．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(split-sequence:split-sequence 'a '(p a n a m a n o b a n a n a))
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="left">(P)</td>
+<td class="left">(N)</td>
+<td class="left">(M)</td>
+<td class="left">(N O B)</td>
+<td class="left">(N)</td>
+<td class="left">(N)</td>
+<td class="left">NIL</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> 標準入力から行を読み込む</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<code>read-line</code> で1行読み込むことができる．全ての行を読み込むには <code>loop</code> マクロなどを使う．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="commonlisp-read-lines">(<span style="color: #728a05;">loop</span> for line = (read-line nil nil <span style="color: #728a05;">:eof</span>)
+      until (eq line <span style="color: #728a05;">:nil</span>)
+      do (print t <span style="color: #259185;">"%s%~"</span> line))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Octet streamを文字列に変換したい</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<code>flexi-streams:octets-to-string</code> を使う．
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> http clientを使いたい</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+<code>drakma:http-request</code> を使う．
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> jsonを書きたい</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+<code>jsown:to-json</code> を使う．オブジェクトを生成するには <code>(:obj key val)</code> を使う．
+jsonをパースするには <code>jsown:parse</code> を使う．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(quicklisp:quickload <span style="color: #728a05;">:jsown</span>)
+(jsown:to-json '(<span style="color: #728a05;">:obj</span> (hello . <span style="color: #259185;">"world"</span>)))
+</pre>
+</div>
+
+<pre class="example">
+{"HELLO":"world"}
+</pre>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(jsown:parse <span style="color: #259185;">"[1, 2, 3]"</span>)
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="right" />
+
+<col  class="right" />
+
+<col  class="right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="right">1</td>
+<td class="right">2</td>
+<td class="right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> 分割代入</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+記述力に勝る <code>optima.extra:let-match</code> か， <code>destructive-binding</code> を使う．
+</p>
+</div>
+
+<div id="outline-container-sec-8-1" class="outline-3">
+<h3 id="sec-8-1"><span class="section-number-3">8.1</span> <code>destructive-bind</code></h3>
+<div class="outline-text-3" id="text-8-1">
+<div class="org-src-container">
+
+<pre class="src src-lisp">(<span style="color: #728a05;">destructuring-bind</span>
+  (first second) <span style="color: #465a61; font-style: italic;">#| &lt;= bound |#</span> '(alpha omega)
+  (format t <span style="color: #259185;">"head is ~s, another is ~s~%"</span> first second))
+</pre>
+</div>
+
+<pre class="example">
+head is ALPHA, another is OMEGA
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-8-2" class="outline-3">
+<h3 id="sec-8-2"><span class="section-number-3">8.2</span> <code>match</code> / <code>let-match</code></h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+<code>let-match</code> は <code>match</code> の <code>let</code> 風の記法である．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(quicklisp:quickload <span style="color: #728a05;">:optima</span>)
+
+<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">define object to match</span>
+(setq lis '(alpha beta gamma))
+(format t <span style="color: #259185;">"lis is ~s~%"</span> lis)
+
+<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">pattern-matching</span>
+(optima:match lis
+  ((list first second third)
+   (format t <span style="color: #259185;">"first is ~s, second is ~s, third is ~s.~%"</span> first second third)))
+
+<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">code above is equivalent to below</span>
+(optima.extra:let-match (((list first second third) lis))
+  (format t <span style="color: #259185;">"first is ~s, second is ~s, third is ~s.~%"</span> first second third))
+</pre>
+</div>
+
+<pre class="example">
+To load "optima":
+  Load 1 ASDF system:
+    optima
+; Loading "optima"
+
+lis is (ALPHA BETA GAMMA)
+first is ALPHA, second is BETA, third is GAMMA.
+first is ALPHA, second is BETA, third is GAMMA.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> 繰り返し</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+<code>loop</code> マクロを使う．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(setq xs '(alpha beta gamma))
+(<span style="color: #728a05;">loop</span> for x in xs
+      do (format t <span style="color: #259185;">"value is ~s~%"</span> x))
+</pre>
+</div>
+
+<pre class="example">
+value is ALPHA
+value is BETA
+value is GAMMA
+</pre>
+
+<p>
+cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.net/article/29800843.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> #pとは</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+パスオブジェクトのリテラル．
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> #sとは</h2>
+<div class="outline-text-2" id="text-11">
+<p>
+構造体のリテラル．
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> doubleとして数値を読む</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+<code>*read-default-float-format*</code> [<a href="http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm">http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm</a>] を使う．
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(format t <span style="color: #259185;">"~s~%"</span> *read-default-float-format*)
+(setq *read-default-float-format* 'double-float)
+(format t <span style="color: #259185;">"~s~%"</span> *read-default-float-format*)
+</pre>
+</div>
+
+<pre class="example">
+DOUBLE-FLOAT
+DOUBLE-FLOAT
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> コマンドラインオプションを読み取る</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+<code>unix-opts</code> などのパッケージでコマンドラインオプションを読み取ることができる．
+</p>
+</div>
+
+<div id="outline-container-sec-13-1" class="outline-3">
+<h3 id="sec-13-1"><span class="section-number-3">13.1</span> <code>unix-opts</code></h3>
+<div class="outline-text-3" id="text-13-1">
+<p>
+TBD
+</p>
+
+<p>
+<code>define-opts</code> でオプションを定義し，
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp"><span style="color: #465a61; font-style: italic;">;;; </span><span style="color: #465a61; font-style: italic;">opts.ros</span>
+
+(quicklisp:quickload <span style="color: #728a05;">:unix-opts</span>)
+
+<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">defining CLI options</span>
+(<span style="color: #728a05;">define-opts</span> <span style="color: #728a05;">:name</span> some-option <span style="color: #465a61; font-style: italic;">; mandatory.</span>
+             <span style="color: #728a05;">:description</span> <span style="color: #259185;">"This is test option."</span> <span style="color: #465a61; font-style: italic;">; optional but recommended.</span>
+             <span style="color: #728a05;">:short</span> #\o <span style="color: #465a61; font-style: italic;">; can omit if you specify :long</span>
+             <span style="color: #728a05;">:long</span> <span style="color: #259185;">"option"</span> <span style="color: #465a61; font-style: italic;">; can omit if you specify :short</span>
+             <span style="color: #728a05;">:meta-var</span> hoge)
+</pre>
+</div>
+
+</main>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Windymelt</p>
+<p class="date">Created: 2017-07-16 Sun 01:59</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

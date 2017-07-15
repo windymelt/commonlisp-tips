@@ -1,0 +1,167 @@
+#+title: Common Lisp Tips
+#+author: Windymelt
+#+OPTIONS: html5-fancy toc:nil
+#+HTML_HEAD: <link rel="stylesheet" href="marx.min.css">
+
+#+HTML:<main>
+
+メモを残していきます．
+不定期に更新します．
+
+#+TOC: headlines 2
+
+* インストール
+TBD
+* パッケージ定義
+asdファイルに使うファイルを記述する（面倒）
+=defpackage= ではパッケージ名はキーワードにする
+
+* Common Lispにsplitはないの？
+文字列を指定の文字で分割するには， =split-sequence:split-sequence= を使う．
+
+#+BEGIN_SRC lisp :output :results value :exports both
+(quicklisp:quickload :split-sequence)
+(split-sequence:split-sequence #\Space "this is sample CL program")
+#+END_SRC
+
+リストも分割できる．
+
+#+BEGIN_SRC lisp :results value :exports both
+(split-sequence:split-sequence 'a '(p a n a m a n o b a n a n a))
+#+END_SRC
+
+#+RESULTS:
+| (P) | (N) | (M) | (N O B) | (N) | (N) | NIL |
+
+* 標準入力から行を読み込む
+=read-line= で1行読み込むことができる．全ての行を読み込むには =loop= マクロなどを使う．
+
+#+NAME: commonlisp-read-lines
+#+BEGIN_SRC lisp
+(loop for line = (read-line nil nil :eof)
+      until (eq line :nil)
+      do (print t "%s%~" line))
+#+END_SRC
+
+* Octet streamを文字列に変換したい
+=flexi-streams:octets-to-string= を使う．
+
+* http clientを使いたい
+=drakma:http-request= を使う．
+
+* jsonを書きたい
+=jsown:to-json= を使う．オブジェクトを生成するには =(:obj key val)= を使う．
+jsonをパースするには =jsown:parse= を使う．
+
+#+BEGIN_SRC lisp :results value :exports both
+(quicklisp:quickload :jsown)
+(jsown:to-json '(:obj (hello . "world")))
+#+END_SRC
+
+#+RESULTS:
+: {"HELLO":"world"}
+
+#+BEGIN_SRC lisp :results value :exports both
+(jsown:parse "[1, 2, 3]")
+#+END_SRC
+
+* 分割代入
+記述力に勝る =optima.extra:let-match= か， =destructive-binding= を使う．
+
+** =destructive-bind=
+
+#+BEGIN_SRC lisp :results output :exports both
+(destructuring-bind
+  (first second) #| <= bound |# '(alpha omega)
+  (format t "head is ~s, another is ~s~%" first second))
+#+END_SRC
+
+** =match= / =let-match=
+=let-match= は =match= の =let= 風の記法である．
+
+#+BEGIN_SRC lisp :results output :exports both
+(quicklisp:quickload :optima)
+
+;; define object to match
+(setq lis '(alpha beta gamma))
+(format t "lis is ~s~%" lis)
+
+;; pattern-matching
+(optima:match lis
+  ((list first second third)
+   (format t "first is ~s, second is ~s, third is ~s.~%" first second third)))
+
+;; code above is equivalent to below
+(optima.extra:let-match (((list first second third) lis))
+  (format t "first is ~s, second is ~s, third is ~s.~%" first second third))
+#+END_SRC
+
+#+RESULTS:
+: To load "optima":
+:   Load 1 ASDF system:
+:     optima
+: ; Loading "optima"
+: 
+: lis is (ALPHA BETA GAMMA)
+: first is ALPHA, second is BETA, third is GAMMA.
+: first is ALPHA, second is BETA, third is GAMMA.
+
+* 繰り返し
+=loop= マクロを使う．
+
+#+BEGIN_SRC lisp :results output :exports both
+(setq xs '(alpha beta gamma))
+(loop for x in xs
+      do (format t "value is ~s~%" x))
+#+END_SRC
+
+#+RESULTS:
+: value is ALPHA
+: value is BETA
+: value is GAMMA
+
+cf. http://smpl.seesaa.net/article/29800843.html
+
+* #pとは
+パスオブジェクトのリテラル．
+
+* #sとは
+構造体のリテラル．
+
+* doubleとして数値を読む
+=*read-default-float-format*= [http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm] を使う．
+
+#+BEGIN_SRC lisp :results output :exports both
+(format t "~s~%" *read-default-float-format*)
+(setq *read-default-float-format* 'double-float)
+(format t "~s~%" *read-default-float-format*)
+#+END_SRC
+
+#+RESULTS:
+: SINGLE-FLOAT
+: DOUBLE-FLOAT
+
+* コマンドラインオプションを読み取る
+
+=unix-opts= などのパッケージでコマンドラインオプションを読み取ることができる．
+
+** =unix-opts=
+
+TBD
+
+=define-opts= でオプションを定義し，
+
+#+BEGIN_SRC lisp
+;;; opts.ros
+
+(quicklisp:quickload :unix-opts)
+
+;; defining CLI options
+(define-opts :name some-option ; mandatory.
+             :description "This is test option." ; optional but recommended.
+             :short #\o ; can omit if you specify :long
+             :long "option" ; can omit if you specify :short
+             :meta-var hoge)
+#+END_SRC
+
+#+HTML:</main>
