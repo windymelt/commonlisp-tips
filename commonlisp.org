@@ -15,12 +15,24 @@
 #+TOC: headlines 2
 
 * インストール
+:PROPERTIES:
+:CUSTOM_ID: install
+:END:
 TBD
+
 * パッケージ定義
+:PROPERTIES:
+:CUSTOM_ID: package
+:END:
+
 asdファイルに使うファイルを記述する（面倒）
 =defpackage= ではパッケージ名はキーワードにする
 
 * Common Lispにsplitはないの？
+:PROPERTIES:
+:CUSTOM_ID: split-string
+:END:
+
 文字列を指定の文字で分割するには， =split-sequence:split-sequence= を使う．
 
 #+BEGIN_SRC lisp :output :results value :exports both
@@ -38,6 +50,10 @@ asdファイルに使うファイルを記述する（面倒）
 | (P) | (N) | (M) | (N O B) | (N) | (N) | NIL |
 
 * 標準入力から行を読み込む
+:PROPERTIES:
+:CUSTOM_ID: read-line
+:END:
+
 =read-line= で1行読み込むことができる．全ての行を読み込むには =loop= マクロなどを使う．
 
 #+NAME: commonlisp-read-lines
@@ -48,12 +64,24 @@ asdファイルに使うファイルを記述する（面倒）
 #+END_SRC
 
 * Octet streamを文字列に変換したい
+:PROPERTIES:
+:CUSTOM_ID: octet-stream-to-string
+:END:
+
 =flexi-streams:octets-to-string= を使う．
 
 * http clientを使いたい
+:PROPERTIES:
+:CUSTOM_ID: http-client-drakma
+:END:
+
 =drakma:http-request= を使う．
 
 * jsonを書きたい
+:PROPERTIES:
+:CUSTOM_ID: write-and-read-json
+:END:
+
 =jsown:to-json= を使う．オブジェクトを生成するには =(:obj key val)= を使う．
 jsonをパースするには =jsown:parse= を使う．
 
@@ -70,9 +98,16 @@ jsonをパースするには =jsown:parse= を使う．
 #+END_SRC
 
 * 分割代入
+:PROPERTIES:
+:CUSTOM_ID: destrucuring-bind
+:END:
+
 記述力に勝る =optima.extra:let-match= か， =destructuring-bind= を使う．
 
 ** =destructuring-bind=
+:PROPERTIES:
+:CUSTOM_ID: destructuring-bind-macro
+:END:
 
 スペルを覚えにくい． *de-structur-ing* である．
 
@@ -83,6 +118,10 @@ jsonをパースするには =jsown:parse= を使う．
 #+END_SRC
 
 ** =match= / =let-match=
+:PROPERTIES:
+:CUSTOM_ID: optima-match
+:END:
+
 =let-match= は =match= の =let= 風の記法である．
 
 #+BEGIN_SRC lisp :results output :exports both
@@ -113,6 +152,10 @@ jsonをパースするには =jsown:parse= を使う．
 : first is ALPHA, second is BETA, third is GAMMA.
 
 * 繰り返し
+:PROPERTIES:
+:CUSTOM_ID: loop
+:END:
+
 =loop= マクロを使う．
 
 #+BEGIN_SRC lisp :results output :exports both
@@ -129,12 +172,24 @@ jsonをパースするには =jsown:parse= を使う．
 cf. http://smpl.seesaa.net/article/29800843.html
 
 * #pとは
+:PROPERTIES:
+:CUSTOM_ID: hash-p
+:END:
+
 パスオブジェクトのリテラル．
 
 * #sとは
+:PROPERTIES:
+:CUSTOM_ID: hash-s
+:END:
+
 構造体のリテラル．
 
 * doubleとして数値を読む
+:PROPERTIES:
+:CUSTOM_ID: read-float-as-double
+:END:
+
 =*read-default-float-format*= [http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm] を使う．
 
 #+BEGIN_SRC lisp :results output :exports both
@@ -148,10 +203,16 @@ cf. http://smpl.seesaa.net/article/29800843.html
 : DOUBLE-FLOAT
 
 * コマンドラインオプションを読み取る
+:PROPERTIES:
+:CUSTOM_ID: read-commandline-options
+:END:
 
 =unix-opts= などのパッケージでコマンドラインオプションを読み取ることができる．
 
 ** =unix-opts=
+:PROPERTIES:
+:CUSTOM_ID: unix-opts
+:END:
 
 TBD
 

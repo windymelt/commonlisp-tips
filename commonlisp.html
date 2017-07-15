@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
 <head>
 <title>Common Lisp Tips</title>
-<!-- 2017-07-16 Sun 02:39 -->
+<!-- 2017-07-16 Sun 03:03 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Windymelt" />
@@ -153,43 +153,45 @@ for the JavaScript code in this tag.
 <h2>&#30446;&#27425;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1. インストール</a></li>
-<li><a href="#sec-2">2. パッケージ定義</a></li>
-<li><a href="#sec-3">3. Common Lispにsplitはないの？</a></li>
-<li><a href="#sec-4">4. 標準入力から行を読み込む</a></li>
-<li><a href="#sec-5">5. Octet streamを文字列に変換したい</a></li>
-<li><a href="#sec-6">6. http clientを使いたい</a></li>
-<li><a href="#sec-7">7. jsonを書きたい</a></li>
-<li><a href="#sec-8">8. 分割代入</a>
+<li><a href="#install">1. インストール</a></li>
+<li><a href="#package">2. パッケージ定義</a></li>
+<li><a href="#split-string">3. Common Lispにsplitはないの？</a></li>
+<li><a href="#read-line">4. 標準入力から行を読み込む</a></li>
+<li><a href="#octet-stream-to-string">5. Octet streamを文字列に変換したい</a></li>
+<li><a href="#http-client-drakma">6. http clientを使いたい</a></li>
+<li><a href="#write-and-read-json">7. jsonを書きたい</a></li>
+<li><a href="#destrucuring-bind">8. 分割代入</a>
 <ul>
-<li><a href="#sec-8-1">8.1. <code>destructuring-bind</code></a></li>
-<li><a href="#sec-8-2">8.2. <code>match</code> / <code>let-match</code></a></li>
+<li><a href="#destructuring-bind-macro">8.1. <code>destructuring-bind</code></a></li>
+<li><a href="#optima-match">8.2. <code>match</code> / <code>let-match</code></a></li>
 </ul>
 </li>
-<li><a href="#sec-9">9. 繰り返し</a></li>
-<li><a href="#sec-10">10. #pとは</a></li>
-<li><a href="#sec-11">11. #sとは</a></li>
-<li><a href="#sec-12">12. doubleとして数値を読む</a></li>
-<li><a href="#sec-13">13. コマンドラインオプションを読み取る</a>
+<li><a href="#loop">9. 繰り返し</a></li>
+<li><a href="#hash-p">10. #pとは</a></li>
+<li><a href="#hash-s">11. #sとは</a></li>
+<li><a href="#read-float-as-double">12. doubleとして数値を読む</a></li>
+<li><a href="#read-commandline-options">13. コマンドラインオプションを読み取る</a>
 <ul>
-<li><a href="#sec-13-1">13.1. <code>unix-opts</code></a></li>
+<li><a href="#unix-opts">13.1. <code>unix-opts</code></a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> インストール</h2>
-<div class="outline-text-2" id="text-1">
+<div id="outline-container-install" class="outline-2">
+<h2 id="install"><a id="sec-1" name="sec-1"></a><span class="section-number-2">1</span> インストール</h2>
+<div class="outline-text-2" id="text-install">
 <p>
 TBD
 </p>
 </div>
 </div>
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> パッケージ定義</h2>
-<div class="outline-text-2" id="text-2">
+
+<div id="outline-container-package" class="outline-2">
+<h2 id="package"><a id="sec-2" name="sec-2"></a><span class="section-number-2">2</span> パッケージ定義</h2>
+<div class="outline-text-2" id="text-package">
+
 <p>
 asdファイルに使うファイルを記述する（面倒）
 <code>defpackage</code> ではパッケージ名はキーワードにする
@@ -197,9 +199,10 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 </div>
 
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> Common Lispにsplitはないの？</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-split-string" class="outline-2">
+<h2 id="split-string"><a id="sec-3" name="sec-3"></a><span class="section-number-2">3</span> Common Lispにsplitはないの？</h2>
+<div class="outline-text-2" id="text-split-string">
+
 <p>
 文字列を指定の文字で分割するには， <code>split-sequence:split-sequence</code> を使う．
 </p>
@@ -210,31 +213,6 @@ asdファイルに使うファイルを記述する（面倒）
 (split-sequence:split-sequence #\Space <span style="color: #259185;">"this is sample CL program"</span>)
 </pre>
 </div>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="left">this</td>
-<td class="left">is</td>
-<td class="left">sample</td>
-<td class="left">CL</td>
-<td class="left">program</td>
-</tr>
-</tbody>
-</table>
 
 <p>
 リストも分割できる．
@@ -279,9 +257,10 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 </div>
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> 標準入力から行を読み込む</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-read-line" class="outline-2">
+<h2 id="read-line"><a id="sec-4" name="sec-4"></a><span class="section-number-2">4</span> 標準入力から行を読み込む</h2>
+<div class="outline-text-2" id="text-read-line">
+
 <p>
 <code>read-line</code> で1行読み込むことができる．全ての行を読み込むには <code>loop</code> マクロなどを使う．
 </p>
@@ -296,27 +275,30 @@ asdファイルに使うファイルを記述する（面倒）
 </div>
 </div>
 
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Octet streamを文字列に変換したい</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-octet-stream-to-string" class="outline-2">
+<h2 id="octet-stream-to-string"><a id="sec-5" name="sec-5"></a><span class="section-number-2">5</span> Octet streamを文字列に変換したい</h2>
+<div class="outline-text-2" id="text-octet-stream-to-string">
+
 <p>
 <code>flexi-streams:octets-to-string</code> を使う．
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> http clientを使いたい</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-http-client-drakma" class="outline-2">
+<h2 id="http-client-drakma"><a id="sec-6" name="sec-6"></a><span class="section-number-2">6</span> http clientを使いたい</h2>
+<div class="outline-text-2" id="text-http-client-drakma">
+
 <p>
 <code>drakma:http-request</code> を使う．
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-7" class="outline-2">
-<h2 id="sec-7"><span class="section-number-2">7</span> jsonを書きたい</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-write-and-read-json" class="outline-2">
+<h2 id="write-and-read-json"><a id="sec-7" name="sec-7"></a><span class="section-number-2">7</span> jsonを書きたい</h2>
+<div class="outline-text-2" id="text-write-and-read-json">
+
 <p>
 <code>jsown:to-json</code> を使う．オブジェクトを生成するには <code>(:obj key val)</code> を使う．
 jsonをパースするには <code>jsown:parse</code> を使う．
@@ -338,39 +320,22 @@ jsonをパースするには <code>jsown:parse</code> を使う．
 <pre class="src src-lisp">(jsown:parse <span style="color: #259185;">"[1, 2, 3]"</span>)
 </pre>
 </div>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="right" />
-
-<col  class="right" />
-
-<col  class="right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="right">1</td>
-<td class="right">2</td>
-<td class="right">3</td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 
-<div id="outline-container-sec-8" class="outline-2">
-<h2 id="sec-8"><span class="section-number-2">8</span> 分割代入</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-destrucuring-bind" class="outline-2">
+<h2 id="destrucuring-bind"><a id="sec-8" name="sec-8"></a><span class="section-number-2">8</span> 分割代入</h2>
+<div class="outline-text-2" id="text-destrucuring-bind">
+
 <p>
 記述力に勝る <code>optima.extra:let-match</code> か， <code>destructuring-bind</code> を使う．
 </p>
 </div>
 
-<div id="outline-container-sec-8-1" class="outline-3">
-<h3 id="sec-8-1"><span class="section-number-3">8.1</span> <code>destructuring-bind</code></h3>
-<div class="outline-text-3" id="text-8-1">
+<div id="outline-container-destructuring-bind-macro" class="outline-3">
+<h3 id="destructuring-bind-macro"><a id="sec-8-1" name="sec-8-1"></a><span class="section-number-3">8.1</span> <code>destructuring-bind</code></h3>
+<div class="outline-text-3" id="text-destructuring-bind-macro">
+
 <p>
 スペルを覚えにくい． <b>de-structur-ing</b> である．
 </p>
@@ -382,16 +347,13 @@ jsonをパースするには <code>jsown:parse</code> を使う．
   (format t <span style="color: #259185;">"head is ~s, another is ~s~%"</span> first second))
 </pre>
 </div>
-
-<pre class="example">
-head is ALPHA, another is OMEGA
-</pre>
 </div>
 </div>
 
-<div id="outline-container-sec-8-2" class="outline-3">
-<h3 id="sec-8-2"><span class="section-number-3">8.2</span> <code>match</code> / <code>let-match</code></h3>
-<div class="outline-text-3" id="text-8-2">
+<div id="outline-container-optima-match" class="outline-3">
+<h3 id="optima-match"><a id="sec-8-2" name="sec-8-2"></a><span class="section-number-3">8.2</span> <code>match</code> / <code>let-match</code></h3>
+<div class="outline-text-3" id="text-optima-match">
+
 <p>
 <code>let-match</code> は <code>match</code> の <code>let</code> 風の記法である．
 </p>
@@ -429,9 +391,10 @@ first is ALPHA, second is BETA, third is GAMMA.
 </div>
 </div>
 
-<div id="outline-container-sec-9" class="outline-2">
-<h2 id="sec-9"><span class="section-number-2">9</span> 繰り返し</h2>
-<div class="outline-text-2" id="text-9">
+<div id="outline-container-loop" class="outline-2">
+<h2 id="loop"><a id="sec-9" name="sec-9"></a><span class="section-number-2">9</span> 繰り返し</h2>
+<div class="outline-text-2" id="text-loop">
+
 <p>
 <code>loop</code> マクロを使う．
 </p>
@@ -456,27 +419,30 @@ cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.ne
 </div>
 </div>
 
-<div id="outline-container-sec-10" class="outline-2">
-<h2 id="sec-10"><span class="section-number-2">10</span> #pとは</h2>
-<div class="outline-text-2" id="text-10">
+<div id="outline-container-hash-p" class="outline-2">
+<h2 id="hash-p"><a id="sec-10" name="sec-10"></a><span class="section-number-2">10</span> #pとは</h2>
+<div class="outline-text-2" id="text-hash-p">
+
 <p>
 パスオブジェクトのリテラル．
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-11" class="outline-2">
-<h2 id="sec-11"><span class="section-number-2">11</span> #sとは</h2>
-<div class="outline-text-2" id="text-11">
+<div id="outline-container-hash-s" class="outline-2">
+<h2 id="hash-s"><a id="sec-11" name="sec-11"></a><span class="section-number-2">11</span> #sとは</h2>
+<div class="outline-text-2" id="text-hash-s">
+
 <p>
 構造体のリテラル．
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-12" class="outline-2">
-<h2 id="sec-12"><span class="section-number-2">12</span> doubleとして数値を読む</h2>
-<div class="outline-text-2" id="text-12">
+<div id="outline-container-read-float-as-double" class="outline-2">
+<h2 id="read-float-as-double"><a id="sec-12" name="sec-12"></a><span class="section-number-2">12</span> doubleとして数値を読む</h2>
+<div class="outline-text-2" id="text-read-float-as-double">
+
 <p>
 <code>*read-default-float-format*</code> [<a href="http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm">http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm</a>] を使う．
 </p>
@@ -490,23 +456,25 @@ cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.ne
 </div>
 
 <pre class="example">
-DOUBLE-FLOAT
+SINGLE-FLOAT
 DOUBLE-FLOAT
 </pre>
 </div>
 </div>
 
-<div id="outline-container-sec-13" class="outline-2">
-<h2 id="sec-13"><span class="section-number-2">13</span> コマンドラインオプションを読み取る</h2>
-<div class="outline-text-2" id="text-13">
+<div id="outline-container-read-commandline-options" class="outline-2">
+<h2 id="read-commandline-options"><a id="sec-13" name="sec-13"></a><span class="section-number-2">13</span> コマンドラインオプションを読み取る</h2>
+<div class="outline-text-2" id="text-read-commandline-options">
+
 <p>
 <code>unix-opts</code> などのパッケージでコマンドラインオプションを読み取ることができる．
 </p>
 </div>
 
-<div id="outline-container-sec-13-1" class="outline-3">
-<h3 id="sec-13-1"><span class="section-number-3">13.1</span> <code>unix-opts</code></h3>
-<div class="outline-text-3" id="text-13-1">
+<div id="outline-container-unix-opts" class="outline-3">
+<h3 id="unix-opts"><a id="sec-13-1" name="sec-13-1"></a><span class="section-number-3">13.1</span> <code>unix-opts</code></h3>
+<div class="outline-text-3" id="text-unix-opts">
+
 <p>
 TBD
 </p>
@@ -537,7 +505,7 @@ TBD
 </div>
 <div id="postamble" class="status">
 <p class="author">&#33879;&#32773;: Windymelt</p>
-<p class="date">Created: 2017-07-16 Sun 02:39</p>
+<p class="date">Created: 2017-07-16 Sun 03:03</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
