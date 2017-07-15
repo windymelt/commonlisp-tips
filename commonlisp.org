@@ -66,9 +66,11 @@ jsonをパースするには =jsown:parse= を使う．
 #+END_SRC
 
 * 分割代入
-記述力に勝る =optima.extra:let-match= か， =destructive-binding= を使う．
+記述力に勝る =optima.extra:let-match= か， =destructuring-bind= を使う．
 
-** =destructive-bind=
+** =destructuring-bind=
+
+スペルを覚えにくい． *de-structur-ing* である．
 
 #+BEGIN_SRC lisp :results output :exports both
 (destructuring-bind
