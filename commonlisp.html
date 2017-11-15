@@ -1,541 +1,190 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<!DOCTYPE html>
+<html>
 <head>
-<title>Common Lisp Tips</title>
-<!-- 2017-07-16 Sun 03:18 -->
-<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta  name="generator" content="Org-mode" />
-<meta  name="author" content="Windymelt" />
-<meta  name="description" content="Common lispで書くために調べた事柄の実用的メモ．CLでのやり方を集めることを目指す．"
- />
-<meta  name="keywords" content="commonlisp" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" href="marx.min.css">
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2013 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Windymelt">
+  <title>Common lisp tips</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+<link rel="stylesheet" href="https://cdn.rawgit.com/mblode/marx/master/css/marx.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<div id="content">
-<h1 class="title">Common Lisp Tips</h1>
 <main>
-
-<p>
-メモを残していきます．
-不定期に更新します．
-</p>
-
-<div id="table-of-contents">
-<h2>&#30446;&#27425;</h2>
-<div id="text-table-of-contents">
+<header>
+<h1 class="title">Common lisp tips</h1>
+<p class="author">Windymelt <windymelt 0x40 3qe.us></p>
+</header>
+<nav id="TOC">
 <ul>
-<li><a href="#install">1. インストール</a></li>
-<li><a href="#defining-abbrev">2. 略称を定義する</a></li>
-<li><a href="#package">3. パッケージ定義</a></li>
-<li><a href="#split-string">4. Common Lispにsplitはないの？</a></li>
-<li><a href="#read-line">5. 標準入力から行を読み込む</a></li>
-<li><a href="#octet-stream-to-string">6. Octet streamを文字列に変換したい</a></li>
-<li><a href="#http-client-drakma">7. http clientを使いたい</a></li>
-<li><a href="#write-and-read-json">8. jsonを書きたい</a></li>
-<li><a href="#destrucuring-bind">9. 分割代入</a>
-<ul>
-<li><a href="#destructuring-bind-macro">9.1. <code>destructuring-bind</code></a></li>
-<li><a href="#optima-match">9.2. <code>match</code> / <code>let-match</code></a></li>
+<li><a href="#インストール">インストール</a></li>
+<li><a href="#略称を定義する">略称を定義する</a></li>
+<li><a href="#パッケージ定義">パッケージ定義</a></li>
+<li><a href="#common-lispにsplitはないの">Common Lispにsplitはないの？</a></li>
+<li><a href="#標準入力から行を読み込む">標準入力から行を読み込む</a></li>
+<li><a href="#octet-streamを文字列に変換したい">Octet streamを文字列に変換したい</a></li>
+<li><a href="#http-clientを使いたい">http clientを使いたい</a></li>
+<li><a href="#jsonを書きたい">jsonを書きたい</a></li>
+<li><a href="#分割代入">分割代入</a><ul>
+<li><a href="#destructuring-bind">destructuring-bind</a></li>
+<li><a href="#match-let-match"><code>match</code> / <code>let-match</code></a></li>
+</ul></li>
+<li><a href="#繰り返し">繰り返し</a></li>
+<li><a href="#pとは">#pとは</a></li>
+<li><a href="#sとは">#sとは</a></li>
+<li><a href="#doubleとして数値を読む">doubleとして数値を読む</a></li>
+<li><a href="#コマンドラインオプションを読み取る">コマンドラインオプションを読み取る</a><ul>
+<li><a href="#unix-opts"><code>unix-opts</code></a></li>
+</ul></li>
 </ul>
-</li>
-<li><a href="#loop">10. 繰り返し</a></li>
-<li><a href="#hash-p">11. #pとは</a></li>
-<li><a href="#hash-s">12. #sとは</a></li>
-<li><a href="#read-float-as-double">13. doubleとして数値を読む</a></li>
-<li><a href="#read-commandline-options">14. コマンドラインオプションを読み取る</a>
-<ul>
-<li><a href="#unix-opts">14.1. <code>unix-opts</code></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
+</nav>
+<!-- Build: pandoc -t html -s --toc --template marx.html < commonlisp.md > commonlisp.html -->
+<p>Common lispで書くために調べた事柄の実用的メモ．CLでのやり方を集めることを目指す．</p>
+<p>メモを残していきます．不定期に更新します．</p>
+<h2 id="インストール">インストール</h2>
+<p>TBD</p>
+<h2 id="略称を定義する">略称を定義する</h2>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">defmacro</span><span class="fu"> abbrev </span>(short long)
+  `(<span class="kw">defmacro</span><span class="fu"> </span>,short (&amp;<span class="kw">rest</span> args)
+     `(,&#39;,long ,@args)))
 
-<div id="outline-container-install" class="outline-2">
-<h2 id="install"><a id="sec-1" name="sec-1"></a><span class="section-number-2">1</span> インストール</h2>
-<div class="outline-text-2" id="text-install">
-<p>
-TBD
-</p>
-</div>
-</div>
+(abbrev dbind <span class="kw">destructuring-bind</span>) <span class="co">; too hard to remember</span>
 
-<div id="outline-container-defining-abbrev" class="outline-2">
-<h2 id="defining-abbrev"><a id="sec-2" name="sec-2"></a><span class="section-number-2">2</span> 略称を定義する</h2>
-<div class="outline-text-2" id="text-defining-abbrev">
+(dbind (x y) &#39;(a b)
+  (<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;~s, ~s~%&quot;</span> x y))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">: A, B</code></pre></div>
+<p>cf. http://www.bookshelf.jp/texi/onlisp/onlisp_17.html</p>
+<h2 id="パッケージ定義">パッケージ定義</h2>
+<p>asdファイルに使うファイルを記述する（面倒） <code>defpackage</code> ではパッケージ名はキーワードにする</p>
+<h2 id="common-lispにsplitはないの">Common Lispにsplitはないの？</h2>
+<p>文字列を指定の文字で分割するには， <code>split-sequence:split-sequence</code> を使う．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(quicklisp:quickload :split-sequence)
+(split-sequence:split-sequence <span class="ch">#\S</span>pace <span class="st">&quot;this is sample CL program&quot;</span>)</code></pre></div>
+<p>リストも分割できる．</p>
+<pre><code>(split-sequence:split-sequence &#39;a &#39;(p a n a m a n o b a n a n a))</code></pre>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">((P) (N) (M) (N O B) (N) (N) NIL)
+<span class="dv">14</span> <span class="co">; split-sequenceは多値を返す</span></code></pre></div>
+<h2 id="標準入力から行を読み込む">標準入力から行を読み込む</h2>
+<p><code>read-line</code> で1行読み込むことができる．全ての行を読み込むには <code>loop</code> マクロなどを使う．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">loop</span> for line <span class="op">=</span> (<span class="kw">read-line</span> <span class="kw">nil</span> <span class="kw">nil</span> :eof)
+      until (<span class="kw">eq</span> line :eof)
+      <span class="kw">do</span> (<span class="kw">print</span> <span class="kw">t</span> <span class="st">&quot;%s%~&quot;</span> line))</code></pre></div>
+<h2 id="octet-streamを文字列に変換したい">Octet streamを文字列に変換したい</h2>
+<p><code>flexi-streams:octets-to-string</code> を使う．</p>
+<h2 id="http-clientを使いたい">http clientを使いたい</h2>
+<p><code>drakma:http-request</code> を使う．</p>
+<h2 id="jsonを書きたい">jsonを書きたい</h2>
+<p><code>jsown:to-json</code> を使う．オブジェクトを生成するには <code>(:obj key val)</code> を使う． jsonをパースするには <code>jsown:parse</code> を使う．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(quicklisp:quickload :jsown)
+(jsown:to-json &#39;(:obj (hello . <span class="st">&quot;world&quot;</span>)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span><span class="dt">&quot;HELLO&quot;</span><span class="fu">:</span><span class="st">&quot;world&quot;</span><span class="fu">}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(jsown:parse <span class="st">&quot;[1, 2, 3]&quot;</span>)</code></pre></div>
+<h2 id="分割代入">分割代入</h2>
+<p>記述力に勝る <code>optima.extra:let-match</code> か， <code>destructuring-bind</code> を使う．</p>
+<h3 id="destructuring-bind">destructuring-bind</h3>
+<p>スペルを覚えにくい． <em>de-structur-ing</em> である．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">destructuring-bind</span>
+  (<span class="kw">first</span> <span class="kw">second</span>) <span class="co">#| &lt;= bound |#</span> &#39;(alpha omega)
+  (<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;head is ~s, another is ~s~%&quot;</span> <span class="kw">first</span> <span class="kw">second</span>))</code></pre></div>
+<h3 id="match-let-match"><code>match</code> / <code>let-match</code></h3>
+<p><code>let-match</code> は <code>match</code> の <code>let</code> 風の記法である．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(quicklisp:quickload :optima)
 
-<div class="org-src-container">
+<span class="co">;; define object to match</span>
+(<span class="kw">setq</span> lis &#39;(alpha beta gamma))
+(<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;lis is ~s~%&quot;</span> lis)
 
-<pre class="src src-lisp">(<span style="color: #728a05;">defmacro</span> <span style="color: #2075c7;">abbrev</span> (short long)
-  `(<span style="color: #728a05;">defmacro</span> ,short (<span style="color: #a57705;">&amp;rest</span> args)
-     `(,',long ,@args)))
-
-(abbrev dbind destructuring-bind) <span style="color: #465a61; font-style: italic;">; too hard to remember</span>
-
-(dbind (x y) '(a b)
-  (format t <span style="color: #259185;">"~s, ~s~%"</span> x y))
-</pre>
-</div>
-
-<pre class="example">
-A, B
-</pre>
-
-<p>
-cf. <a href="http://www.bookshelf.jp/texi/onlisp/onlisp_17.html">http://www.bookshelf.jp/texi/onlisp/onlisp_17.html</a>
-</p>
-</div>
-</div>
-
-<div id="outline-container-package" class="outline-2">
-<h2 id="package"><a id="sec-3" name="sec-3"></a><span class="section-number-2">3</span> パッケージ定義</h2>
-<div class="outline-text-2" id="text-package">
-
-<p>
-asdファイルに使うファイルを記述する（面倒）
-<code>defpackage</code> ではパッケージ名はキーワードにする
-</p>
-</div>
-</div>
-
-<div id="outline-container-split-string" class="outline-2">
-<h2 id="split-string"><a id="sec-4" name="sec-4"></a><span class="section-number-2">4</span> Common Lispにsplitはないの？</h2>
-<div class="outline-text-2" id="text-split-string">
-
-<p>
-文字列を指定の文字で分割するには， <code>split-sequence:split-sequence</code> を使う．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(quicklisp:quickload <span style="color: #728a05;">:split-sequence</span>)
-(split-sequence:split-sequence #\Space <span style="color: #259185;">"this is sample CL program"</span>)
-</pre>
-</div>
-
-<p>
-リストも分割できる．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(split-sequence:split-sequence 'a '(p a n a m a n o b a n a n a))
-</pre>
-</div>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="left">(P)</td>
-<td class="left">(N)</td>
-<td class="left">(M)</td>
-<td class="left">(N O B)</td>
-<td class="left">(N)</td>
-<td class="left">(N)</td>
-<td class="left">NIL</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div id="outline-container-read-line" class="outline-2">
-<h2 id="read-line"><a id="sec-5" name="sec-5"></a><span class="section-number-2">5</span> 標準入力から行を読み込む</h2>
-<div class="outline-text-2" id="text-read-line">
-
-<p>
-<code>read-line</code> で1行読み込むことができる．全ての行を読み込むには <code>loop</code> マクロなどを使う．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp" id="commonlisp-read-lines">(<span style="color: #728a05;">loop</span> for line = (read-line nil nil <span style="color: #728a05;">:eof</span>)
-      until (eq line <span style="color: #728a05;">:eof</span>)
-      do (print t <span style="color: #259185;">"%s%~"</span> line))
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-octet-stream-to-string" class="outline-2">
-<h2 id="octet-stream-to-string"><a id="sec-6" name="sec-6"></a><span class="section-number-2">6</span> Octet streamを文字列に変換したい</h2>
-<div class="outline-text-2" id="text-octet-stream-to-string">
-
-<p>
-<code>flexi-streams:octets-to-string</code> を使う．
-</p>
-</div>
-</div>
-
-<div id="outline-container-http-client-drakma" class="outline-2">
-<h2 id="http-client-drakma"><a id="sec-7" name="sec-7"></a><span class="section-number-2">7</span> http clientを使いたい</h2>
-<div class="outline-text-2" id="text-http-client-drakma">
-
-<p>
-<code>drakma:http-request</code> を使う．
-</p>
-</div>
-</div>
-
-<div id="outline-container-write-and-read-json" class="outline-2">
-<h2 id="write-and-read-json"><a id="sec-8" name="sec-8"></a><span class="section-number-2">8</span> jsonを書きたい</h2>
-<div class="outline-text-2" id="text-write-and-read-json">
-
-<p>
-<code>jsown:to-json</code> を使う．オブジェクトを生成するには <code>(:obj key val)</code> を使う．
-jsonをパースするには <code>jsown:parse</code> を使う．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(quicklisp:quickload <span style="color: #728a05;">:jsown</span>)
-(jsown:to-json '(<span style="color: #728a05;">:obj</span> (hello . <span style="color: #259185;">"world"</span>)))
-</pre>
-</div>
-
-<pre class="example">
-{"HELLO":"world"}
-</pre>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(jsown:parse <span style="color: #259185;">"[1, 2, 3]"</span>)
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-destrucuring-bind" class="outline-2">
-<h2 id="destrucuring-bind"><a id="sec-9" name="sec-9"></a><span class="section-number-2">9</span> 分割代入</h2>
-<div class="outline-text-2" id="text-destrucuring-bind">
-
-<p>
-記述力に勝る <code>optima.extra:let-match</code> か， <code>destructuring-bind</code> を使う．
-</p>
-</div>
-
-<div id="outline-container-destructuring-bind-macro" class="outline-3">
-<h3 id="destructuring-bind-macro"><a id="sec-9-1" name="sec-9-1"></a><span class="section-number-3">9.1</span> <code>destructuring-bind</code></h3>
-<div class="outline-text-3" id="text-destructuring-bind-macro">
-
-<p>
-スペルを覚えにくい． <b>de-structur-ing</b> である．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(<span style="color: #728a05;">destructuring-bind</span>
-  (first second) <span style="color: #465a61; font-style: italic;">#| &lt;= bound |#</span> '(alpha omega)
-  (format t <span style="color: #259185;">"head is ~s, another is ~s~%"</span> first second))
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-optima-match" class="outline-3">
-<h3 id="optima-match"><a id="sec-9-2" name="sec-9-2"></a><span class="section-number-3">9.2</span> <code>match</code> / <code>let-match</code></h3>
-<div class="outline-text-3" id="text-optima-match">
-
-<p>
-<code>let-match</code> は <code>match</code> の <code>let</code> 風の記法である．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(quicklisp:quickload <span style="color: #728a05;">:optima</span>)
-
-<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">define object to match</span>
-(setq lis '(alpha beta gamma))
-(format t <span style="color: #259185;">"lis is ~s~%"</span> lis)
-
-<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">pattern-matching</span>
+<span class="co">;; pattern-matching</span>
 (optima:match lis
-  ((list first second third)
-   (format t <span style="color: #259185;">"first is ~s, second is ~s, third is ~s.~%"</span> first second third)))
+  ((<span class="kw">list</span> <span class="kw">first</span> <span class="kw">second</span> <span class="kw">third</span>)
+   (<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;first is ~s, second is ~s, third is ~s.~%&quot;</span> <span class="kw">first</span> <span class="kw">second</span> <span class="kw">third</span>)))
 
-<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">code above is equivalent to below</span>
-(optima.extra:let-match (((list first second third) lis))
-  (format t <span style="color: #259185;">"first is ~s, second is ~s, third is ~s.~%"</span> first second third))
-</pre>
-</div>
-
-<pre class="example">
-To load "optima":
+<span class="co">;; code above is equivalent to below</span>
+(optima.extra:let-match (((<span class="kw">list</span> <span class="kw">first</span> <span class="kw">second</span> <span class="kw">third</span>) lis))
+  (<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;first is ~s, second is ~s, third is ~s.~%&quot;</span> <span class="kw">first</span> <span class="kw">second</span> <span class="kw">third</span>))</code></pre></div>
+<pre><code>To load &quot;optima&quot;:
   Load 1 ASDF system:
     optima
-; Loading "optima"
+; Loading &quot;optima&quot;
 
 lis is (ALPHA BETA GAMMA)
 first is ALPHA, second is BETA, third is GAMMA.
-first is ALPHA, second is BETA, third is GAMMA.
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-loop" class="outline-2">
-<h2 id="loop"><a id="sec-10" name="sec-10"></a><span class="section-number-2">10</span> 繰り返し</h2>
-<div class="outline-text-2" id="text-loop">
-
-<p>
-<code>loop</code> マクロを使う．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(setq xs '(alpha beta gamma))
-(<span style="color: #728a05;">loop</span> for x in xs
-      do (format t <span style="color: #259185;">"value is ~s~%"</span> x))
-</pre>
-</div>
-
-<pre class="example">
-value is ALPHA
+first is ALPHA, second is BETA, third is GAMMA.</code></pre>
+<h2 id="繰り返し">繰り返し</h2>
+<p><code>loop</code> マクロを使う．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">setq</span> xs &#39;(alpha beta gamma))
+(<span class="kw">loop</span> for x in xs
+      <span class="kw">do</span> (<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;value is ~s~%&quot;</span> x))</code></pre></div>
+<pre><code>value is ALPHA
 value is BETA
-value is GAMMA
-</pre>
+value is GAMMA</code></pre>
+<p>cf. <a href="http://smpl.seesaa.net/article/29800843.html" class="uri">http://smpl.seesaa.net/article/29800843.html</a></p>
+<h2 id="pとは">#pとは</h2>
+<p>パスオブジェクトのリテラル．</p>
+<h2 id="sとは">#sとは</h2>
+<p>構造体のリテラル．</p>
+<h2 id="doubleとして数値を読む">doubleとして数値を読む</h2>
+<p><a href="http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm"><code>*read-default-float-format*</code></a> を使う．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;~s~%&quot;</span> <span class="va">*read-default-float-format*</span>)
+(<span class="kw">setq</span> <span class="va">*read-default-float-format*</span> &#39;double-float)
+(<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;~s~%&quot;</span> <span class="va">*read-default-float-format*</span>)</code></pre></div>
+<pre><code>SINGLE-FLOAT
+DOUBLE-FLOAT</code></pre>
+<h2 id="コマンドラインオプションを読み取る">コマンドラインオプションを読み取る</h2>
+<p><code>unix-opts</code> などのパッケージでコマンドラインオプションを読み取ることができる．</p>
+<h3 id="unix-opts"><code>unix-opts</code></h3>
+<p>TBD</p>
+<p><code>define-opts</code> でオプションを定義し，</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span class="co">;;; opts.ros</span>
 
-<p>
-cf. <a href="http://smpl.seesaa.net/article/29800843.html">http://smpl.seesaa.net/article/29800843.html</a>
-</p>
-</div>
-</div>
+(quicklisp:quickload :unix-opts)
 
-<div id="outline-container-hash-p" class="outline-2">
-<h2 id="hash-p"><a id="sec-11" name="sec-11"></a><span class="section-number-2">11</span> #pとは</h2>
-<div class="outline-text-2" id="text-hash-p">
-
-<p>
-パスオブジェクトのリテラル．
-</p>
-</div>
-</div>
-
-<div id="outline-container-hash-s" class="outline-2">
-<h2 id="hash-s"><a id="sec-12" name="sec-12"></a><span class="section-number-2">12</span> #sとは</h2>
-<div class="outline-text-2" id="text-hash-s">
-
-<p>
-構造体のリテラル．
-</p>
-</div>
-</div>
-
-<div id="outline-container-read-float-as-double" class="outline-2">
-<h2 id="read-float-as-double"><a id="sec-13" name="sec-13"></a><span class="section-number-2">13</span> doubleとして数値を読む</h2>
-<div class="outline-text-2" id="text-read-float-as-double">
-
-<p>
-<code>*read-default-float-format*</code> [<a href="http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm">http://www.lispworks.com/documentation/HyperSpec/Body/v_rd_def.htm</a>] を使う．
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp">(format t <span style="color: #259185;">"~s~%"</span> *read-default-float-format*)
-(setq *read-default-float-format* 'double-float)
-(format t <span style="color: #259185;">"~s~%"</span> *read-default-float-format*)
-</pre>
-</div>
-
-<pre class="example">
-SINGLE-FLOAT
-DOUBLE-FLOAT
-</pre>
-</div>
-</div>
-
-<div id="outline-container-read-commandline-options" class="outline-2">
-<h2 id="read-commandline-options"><a id="sec-14" name="sec-14"></a><span class="section-number-2">14</span> コマンドラインオプションを読み取る</h2>
-<div class="outline-text-2" id="text-read-commandline-options">
-
-<p>
-<code>unix-opts</code> などのパッケージでコマンドラインオプションを読み取ることができる．
-</p>
-</div>
-
-<div id="outline-container-unix-opts" class="outline-3">
-<h3 id="unix-opts"><a id="sec-14-1" name="sec-14-1"></a><span class="section-number-3">14.1</span> <code>unix-opts</code></h3>
-<div class="outline-text-3" id="text-unix-opts">
-
-<p>
-TBD
-</p>
-
-<p>
-<code>define-opts</code> でオプションを定義し，
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-lisp"><span style="color: #465a61; font-style: italic;">;;; </span><span style="color: #465a61; font-style: italic;">opts.ros</span>
-
-(quicklisp:quickload <span style="color: #728a05;">:unix-opts</span>)
-
-<span style="color: #465a61; font-style: italic;">;; </span><span style="color: #465a61; font-style: italic;">defining CLI options</span>
-(<span style="color: #728a05;">define-opts</span> <span style="color: #728a05;">:name</span> some-option <span style="color: #465a61; font-style: italic;">; mandatory.</span>
-             <span style="color: #728a05;">:description</span> <span style="color: #259185;">"This is test option."</span> <span style="color: #465a61; font-style: italic;">; optional but recommended.</span>
-             <span style="color: #728a05;">:short</span> #\o <span style="color: #465a61; font-style: italic;">; can omit if you specify :long</span>
-             <span style="color: #728a05;">:long</span> <span style="color: #259185;">"option"</span> <span style="color: #465a61; font-style: italic;">; can omit if you specify :short</span>
-             <span style="color: #728a05;">:meta-var</span> hoge)
-</pre>
-</div>
-
+<span class="co">;; defining CLI options</span>
+(define-opts <span class="bu">:name</span> some-option <span class="co">; mandatory.</span>
+             :description <span class="st">&quot;This is test option.&quot;</span> <span class="co">; optional but recommended.</span>
+             :short <span class="ch">#\o</span> <span class="co">; can omit if you specify :long</span>
+             :long <span class="st">&quot;option&quot;</span> <span class="co">; can omit if you specify :short</span>
+             :meta-var hoge)</code></pre></div>
 </main>
-</div>
-</div>
-</div>
-</div>
-<div id="postamble" class="status">
-<p class="author">&#33879;&#32773;: Windymelt</p>
-<p class="date">Created: 2017-07-16 Sun 03:18</p>
-<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
-</div>
 </body>
 </html>
