@@ -59,6 +59,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <ul>
 <li><a href="#インストール">インストール</a></li>
 <li><a href="#略称を定義する">略称を定義する</a></li>
+<li><a href="#format-function-designators">速習<code>format</code> 関数</a><ul>
+<li><a href="#文法">文法</a></li>
+<li><a href="#format-designator">指示子</a></li>
+<li><a href="#format-padding">パディング</a></li>
+</ul></li>
 <li><a href="#パッケージ定義">パッケージ定義</a></li>
 <li><a href="#common-lispにsplitはないの">Common Lispにsplitはないの？</a></li>
 <li><a href="#標準入力から行を読み込む">標準入力から行を読み込む</a></li>
@@ -79,6 +84,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 </nav>
 <!-- Build: pandoc -t html -s --toc --template marx.html < commonlisp.md > commonlisp.html -->
+<!-- See https://pandoc.org/MANUAL.html -->
 <p>Common lispで書くために調べた事柄の実用的メモ．CLでのやり方を集めることを目指す．</p>
 <p>メモを残していきます．不定期に更新します．</p>
 <h2 id="インストール">インストール</h2>
@@ -92,8 +98,58 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 (dbind (x y) &#39;(a b)
   (<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;~s, ~s~%&quot;</span> x y))</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">: A, B</code></pre></div>
-<p>cf. http://www.bookshelf.jp/texi/onlisp/onlisp_17.html</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">A, B</code></pre></div>
+<p>cf. <a href="http://www.bookshelf.jp/texi/onlisp/onlisp_17.html" class="uri">http://www.bookshelf.jp/texi/onlisp/onlisp_17.html</a></p>
+<h2 id="format-function-designators">速習<code>format</code> 関数</h2>
+<p>個人的によく使うものをまとめた．より詳しい説明は， <a href="http://super.para.media.kyoto-u.ac.jp/~tasuku/format-func.html" class="uri">http://super.para.media.kyoto-u.ac.jp/~tasuku/format-func.html</a> を参照せよ．</p>
+<h3 id="文法">文法</h3>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">format</span>
+  <span class="kw">t</span>                 <span class="co">; tのときはstdoutに出力する</span>
+                    <span class="co">; nilのときは文字列を返す</span>
+                    <span class="co">; ストリームのときはそこに出力する．</span>
+                    <span class="co">; より進んだ用法は上掲のリンクを参照せよ</span>
+  <span class="st">&quot;制御シーケンス&quot;</span>    <span class="co">; 指示子を含む文字列．</span>
+  [引数...]         <span class="co">; 0個以上の引数が続く</span>
+)</code></pre></div>
+<h3 id="format-designator">指示子</h3>
+<p>これが全ての指示子ではない．より進んだ指示子や用法は，上掲のリンクを参照せよ．</p>
+<h4 id="s"><code>~s</code></h4>
+<p>基本的な出力．引数をそのまま印字する．</p>
+<h4 id="a"><code>~a</code></h4>
+<p>Aesthetic(美的)な出力を行う．例えば，<code>~s</code>とは違って文字列を括るダブルクオート<code>&quot;</code>は印字されない．</p>
+<h4 id="section"><code>~%</code></h4>
+<p>改行を出力する．<code>#\Newline</code>を出力するが，これが<code>\n</code>になるか<code>\r\n</code>になるか<code>\r</code>になるかは，処理系/OSに依存する． 確実に<code>\n</code>や<code>\r\n</code>を出力したいときは，<code>~c</code>に<code>#\return</code>や<code>#\linefeed</code>を渡す．</p>
+<p>cf. <a href="https://stackoverflow.com/a/2640875" class="uri">https://stackoverflow.com/a/2640875</a></p>
+<h4 id="section-1"><code>~&amp;</code></h4>
+<p>カーソルが行頭になければ改行を出力する．行頭にないときは何も出力しない．これは<code>fresh-line</code>関数を呼び出すのと同等である．</p>
+<h4 id="section-2"><code>~*</code></h4>
+<p>引数を1つ飛ばす．</p>
+<h4 id="section-3"><code>~:*</code></h4>
+<p>引数を1つ戻す．同じ引数を使い回したいときに使う．<code>~*</code>にコロン修飾子を付加した，特殊な形．</p>
+<h4 id="section-4"><code>~{</code> / <code>~}</code></h4>
+<p><code>~{</code>は，リストを1つ受け取り，<code>~}</code>に到達するまでの区間では，その要素が引数となる． <code>~}</code>に到達すると，リストの次の要素が引数になる．要素がもうないときは，繰り返しから脱出する．</p>
+<h4 id="section-5"><code>~^</code></h4>
+<p>次の要素がないときは，そこで繰り返しから脱出する．</p>
+<h3 id="format-padding">パディング</h3>
+<p>いくつかの指示子では，数字を挟み込むとパディングができる．パディングはむずかしい．</p>
+<div class="sourceCode"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp">(<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;[~16a] yen&quot;</span> <span class="dv">5000</span>) <span class="co">; left padding</span>
+(<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;[~16@a] yen&quot;</span> <span class="dv">5000</span>) <span class="co">; right padding</span>
+(<span class="kw">format</span> <span class="kw">t</span> <span class="st">&quot;[~16,,,&#39;*a] yen&quot;</span> <span class="dv">5000</span>) <span class="co">; left padding with asterisk</span></code></pre></div>
+<pre><code>[5000            ] yen
+[            5000] yen
+[5000************] yen</code></pre>
+<p>例えば<code>~a</code>では，~<code>mincol</code>,<code>colinc</code>,<code>minpad</code>,<code>padchar</code>aという引数の渡し方で細かくパディングを制御できる．</p>
+<ul>
+<li>まず，minpadで指示した数だけのpadcharが無条件に挿入される．padcharは単一の文字であり，クオート<code>'</code>と文字の組合せで表現される．</li>
+<li>次に，colincで指示した数ずつのpadcharが挿入される．mincolに到達するまで，このステップが繰り返される．</li>
+<li>各引数は，だいたい省略できる．省略したときは適当なデフォルト値になるが，細かい挙動はやはり前掲のリンクを参照せよ．</li>
+</ul>
+<pre class="comonlisp"><code>; ワロタを印字し，
+; 直ちにwを(padchar)3文字(minpad)挿入し，
+; 10文字を超えるまで(mincol)3文字ずつ(colinc)wを挿入する
+(format t &quot;~10,3,3,&#39;wa&quot; &quot;ワロタ&quot;)</code></pre>
+<pre><code>ワロタwwwwwwwww</code></pre>
+<p>使い道は，よくわからない．Lispは人工知能界隈で使われていたという事情から考えると，こういう機能も必要だったのかもしれない．</p>
 <h2 id="パッケージ定義">パッケージ定義</h2>
 <p>asdファイルに使うファイルを記述する（面倒） <code>defpackage</code> ではパッケージ名はキーワードにする</p>
 <h2 id="common-lispにsplitはないの">Common Lispにsplitはないの？</h2>

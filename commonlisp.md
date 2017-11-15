@@ -2,6 +2,7 @@
 % Windymelt <windymelt 0x40 3qe.us>
 
 <!-- Build: pandoc -t html -s --toc --template marx.html < commonlisp.md > commonlisp.html -->
+<!-- See https://pandoc.org/MANUAL.html -->
 Common lispで書くために調べた事柄の実用的メモ．CLでのやり方を集めることを目指す．
 
 メモを残していきます．不定期に更新します．
@@ -25,7 +26,98 @@ TBD
 A, B
 ```
 
-cf. http://www.bookshelf.jp/texi/onlisp/onlisp_17.html
+cf. <http://www.bookshelf.jp/texi/onlisp/onlisp_17.html>
+
+## 速習`format` 関数 {#format-function-designators}
+
+個人的によく使うものをまとめた．より詳しい説明は， <http://super.para.media.kyoto-u.ac.jp/~tasuku/format-func.html> を参照せよ．
+
+### 文法
+
+```commonlisp
+(format
+  t                 ; tのときはstdoutに出力する
+                    ; nilのときは文字列を返す
+                    ; ストリームのときはそこに出力する．
+                    ; より進んだ用法は上掲のリンクを参照せよ
+  "制御シーケンス"    ; 指示子を含む文字列．
+  [引数...]         ; 0個以上の引数が続く
+)
+```
+
+### 指示子 {#format-designator}
+
+これが全ての指示子ではない．より進んだ指示子や用法は，上掲のリンクを参照せよ．
+
+#### `~s`
+基本的な出力．引数をそのまま印字する．
+
+#### `~a`
+
+Aesthetic(美的)な出力を行う．例えば，`~s`とは違って文字列を括るダブルクオート`"`は印字されない．
+
+#### `~%`
+
+改行を出力する．`#\Newline`を出力するが，これが`\n`になるか`\r\n`になるか`\r`になるかは，処理系/OSに依存する．
+確実に`\n`や`\r\n`を出力したいときは，`~c`に`#\return`や`#\linefeed`を渡す．
+
+cf. <https://stackoverflow.com/a/2640875>
+
+#### `~&`
+
+カーソルが行頭になければ改行を出力する．行頭にないときは何も出力しない．これは`fresh-line`関数を呼び出すのと同等である．
+
+#### `~*`
+
+引数を1つ飛ばす．
+
+#### `~:*`
+
+引数を1つ戻す．同じ引数を使い回したいときに使う．`~*`にコロン修飾子を付加した，特殊な形．
+
+#### `~{` / `~}`
+
+`~{`は，リストを1つ受け取り，`~}`に到達するまでの区間では，その要素が引数となる．
+`~}`に到達すると，リストの次の要素が引数になる．要素がもうないときは，繰り返しから脱出する．
+
+#### `~^`
+
+次の要素がないときは，そこで繰り返しから脱出する．
+
+### パディング {#format-padding}
+
+いくつかの指示子では，数字を挟み込むとパディングができる．パディングはむずかしい．
+
+```commonlisp
+(format t "[~16a] yen" 5000) ; left padding
+(format t "[~16@a] yen" 5000) ; right padding
+(format t "[~16,,,'*a] yen" 5000) ; left padding with asterisk
+```
+
+```
+[5000            ] yen
+[            5000] yen
+[5000************] yen
+```
+
+例えば`~a`では，~`mincol`,`colinc`,`minpad`,`padchar`aという引数の渡し方で細かくパディングを制御できる．
+
++ まず，minpadで指示した数だけのpadcharが無条件に挿入される．padcharは単一の文字であり，クオート`'`と文字の組合せで表現される．
++ 次に，colincで指示した数ずつのpadcharが挿入される．mincolに到達するまで，このステップが繰り返される．
++ 各引数は，だいたい省略できる．省略したときは適当なデフォルト値になるが，細かい挙動はやはり前掲のリンクを参照せよ．
+
+```comonlisp
+; ワロタを印字し，
+; 直ちにwを(padchar)3文字(minpad)挿入し，
+; 10文字を超えるまで(mincol)3文字ずつ(colinc)wを挿入する
+(format t "~10,3,3,'wa" "ワロタ")
+```
+
+```
+ワロタwwwwwwwww
+```
+
+使い道は，よくわからない．Lispは人工知能界隈で使われていたという事情から考えると，こういう機能も必要だったのかもしれない．
 
 ## パッケージ定義
 asdファイルに使うファイルを記述する（面倒）
@@ -142,7 +234,7 @@ value is BETA
 value is GAMMA
 ```
 
-cf. [http://smpl.seesaa.net/article/29800843.html](http://smpl.seesaa.net/article/29800843.html)
+cf. <http://smpl.seesaa.net/article/29800843.html>
 
 ## #pとは
 
